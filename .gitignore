@@ -1,0 +1,101 @@
+_ReSharper*
+[Bb]in
+obj
+objd
+out/
+tmp/
+App_Data
+*.user
+*.sln
+*.sln.cache
+*.userosscache
+*.suo
+*.swp
+*.orig
+TestResults
+[Tt]humbs.db
+buildd.log
+buildd.wrn
+buildd.rec
+buildd.evt
+buildd.dbb
+buildd.prf
+buildd.trc
+buildd.err
+build.log
+build.evt
+build.prf
+build.dbb
+build.trc
+build.err
+*.log
+*.bak
+OACRTemp/
+build_logs/
+lock
+/src/packaging/versioning/legacy/bldver.*
+/src/packaging/versioning/legacy/sources.ver
+/data
+*.projhash*
+*.slnhash*
+*.tmp_proj
+deleted/
+# quickbuild.exe
+/target/distrib/*
+/VersionGeneratingLogs/
+QLogs
+QLocal
+QTestLogs
+pingme.txt
+StyleCop.Cache
+
+# bad tlb/chm generators in nmake tree
+*.tlb
+*.chm
+*.orig
+
+# silverlight
+ClientBin/
+
+# azure
+*.build.csdef
+csx/
+/version
+/__cbcOutput/debug/amd64/private
+
+#localization
+_LBATemp
+_LBA.WKSP/
+LBALog.txt
+RunLba.cmd
+
+# Mac/Xamarin
+*.userprefs
+.DS_Store
+
+*.err
+
+# Mac/ XCode
+xcuserdata
+
+# Mac version
+src/ui/macplatform/Build/version/CommonAssemblyInfo.cs
+src/ui/macplatform/UI/Info.plist
+src/ui/macplatform/UI/App.config
+src/ui/MacPlatform/NativeLibraryBinding/NativeLibraries/Config/NativeLibraries__common.xcconfig
+
+# NuGet Packages folder for Mac solution.
+src/ui/macplatform/packages
+
+# Visual Studio 2015 cache/options directory
+.vs/
+UpgradeLog.htm
+
+#Exclude nuget packages folders
+packages
+#ignore envkeep.txt
+build/envkeep.txt
+Packages.BAELoc.config
+
+#Exclude rbvt token cache file
+*TokenCache.dat
