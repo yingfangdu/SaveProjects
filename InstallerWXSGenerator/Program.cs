@@ -8,11 +8,11 @@ namespace GeneratePackages
 {
     class Program
     {
-        const string HTMLUIComponentIdStartTag = "<!-- HTML UI Package Id starts here -->";
-        const string HTMLUIComponentIdEndTag = "<!-- HTML UI Package Id ends here -->";
+        const string HTMLUIComponentIdStartTag = "<!-- HTMLUITag1 -->";
+        const string HTMLUIComponentIdEndTag = "<!-- HTMLUITag2 -->";
 
-        const string HTMLUIComponentItemsStartTag = "<!-- HTML UI Package items starts here -->";
-        const string HTMLUIComponentItemsEndTag = "<!-- HTML UI Package items ends here -->";
+        const string HTMLUIComponentItemsStartTag = "<!-- HTMLUITag3 -->";
+        const string HTMLUIComponentItemsEndTag = "<!-- HTMLUITag4 -->";
 
         private class FileData
         {
