@@ -8,13 +8,6 @@ namespace GeneratePackages
 {
     class Program
     {
-        const string BAERepoPath = @"E:\Repos\BAE\";
-        const string ProgramWXSPath = BAERepoPath + @"src\packaging\installer\msi\program.wxs";
-        const string HTMLFolder = BAERepoPath + @"src\ui\HTMLUI\node_modules\@bingads-webui-bae\htmlui\dist\release";
-        const string HTMLFolderCSS = BAERepoPath + @"src\ui\HTMLUI\node_modules\@bingads-webui-bae\htmlui\dist\release\static\css";
-        const string HTMLFolderJS = BAERepoPath + @"src\ui\HTMLUI\node_modules\@bingads-webui-bae\htmlui\dist\release\static\js";
-        const string HTMLFolderMedia = BAERepoPath + @"src\ui\HTMLUI\node_modules\@bingads-webui-bae\htmlui\dist\release\static\media";
-
         const string HTMLUIComponentIdStartTag = "<!-- HTML UI Package Id starts here -->";
         const string HTMLUIComponentIdEndTag = "<!-- HTML UI Package Id ends here -->";
 
@@ -29,6 +22,37 @@ namespace GeneratePackages
 
         static void Main(string[] args)
         {
+            if (args.Length != 1)
+            {
+                Console.WriteLine(@"Please input the BAE Repo full path, for example:\n GeneratePackages.exe E:\Repos\BAE\");
+                return;
+            }
+
+            var path = args[0];
+            if (!Directory.Exists(args[0]))
+            {
+                Console.WriteLine($"Cannot find the path {path}");
+                return;
+            }
+
+            string BAERepoPath = string.Format("{0}", path);
+            //const string BAERepoPath = @"E:\Repos\BAE\";
+            string ProgramWXSPath = Path.Combine(BAERepoPath, @"src\packaging\installer\msi\program.wxs");
+            string HTMLFolder = Path.Combine(BAERepoPath, @"src\ui\HTMLUI\node_modules\@bingads-webui-bae\htmlui\dist\release");
+            string HTMLFolderCSS = Path.Combine(BAERepoPath, @"src\ui\HTMLUI\node_modules\@bingads-webui-bae\htmlui\dist\release\static\css");
+            string HTMLFolderJS = Path.Combine(BAERepoPath, @"src\ui\HTMLUI\node_modules\@bingads-webui-bae\htmlui\dist\release\static\js");
+            string HTMLFolderMedia = Path.Combine(BAERepoPath, @"src\ui\HTMLUI\node_modules\@bingads-webui-bae\htmlui\dist\release\static\media");
+
+            if (!File.Exists(ProgramWXSPath)
+                || !Directory.Exists(HTMLFolder)
+                || !Directory.Exists(HTMLFolderCSS)
+                || !Directory.Exists(HTMLFolderJS)
+                || !Directory.Exists(HTMLFolderMedia))
+            {
+                Console.WriteLine($"Cannot find the folder");
+                return;
+            }
+
             var html = GenerateStrippedFileNames(HTMLFolder);
             var css = GenerateStrippedFileNames(HTMLFolderCSS);
             var js = GenerateStrippedFileNames(HTMLFolderJS);
@@ -103,6 +127,7 @@ namespace GeneratePackages
             newFullString.Append(componentDetail);
             newFullString.Append(part3);
             File.WriteAllText(ProgramWXSPath, newFullString.ToString());
+            Console.WriteLine($"{ProgramWXSPath} is updated.\nPlease check the content.");
         }
 
         private static string FormatComponentId(FileData fileData)
@@ -127,6 +152,8 @@ namespace GeneratePackages
                     FileName = file,
                 });
             }
+
+            fileData.OrderBy(item => item.FileId);
 
             return fileData;
         }
