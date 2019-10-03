@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Xml;
     using System.Xml.Linq;
 
     internal class ErrorNode
@@ -64,9 +65,9 @@
             }
 
             const string MAESyncStringFormat = "<data name=\"SyncError_{0}\" xml:space=\"preserve\">\n" +
-                                            "   <value>{1}</value>\n" +
-                                            "   <comment>ApI Error: UA Please review. [{1}]</comment>\n" +
-                                            "</data>";
+                                               "    <value>{1}</value>\n" +
+                                               "    <comment>ApI Error: UA Please review. [{1}]</comment>\n" +
+                                               "</data>";
 
             StringBuilder output = new StringBuilder();
 
@@ -336,6 +337,7 @@
                     {
                         commentNode = new XElement("comment");
                         node.Add(commentNode);
+                        node.Add(Environment.NewLine);
                     }
 
                     commentNode.Value = $"ApI Error: UA Please review. [{updatedNode.Message}]";
