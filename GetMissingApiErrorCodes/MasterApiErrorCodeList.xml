@@ -35,6 +35,7 @@
       <error name="DuplicateId" errorcode="DuplicateId" code="515" message="Duplicate IDs are contained in the request."/>
       <error name="EntityIdFilterMismatch" errorcode="EntityIdFilterMismatch" code="516" message="The type of the entity that was specified by ID does not match provided entity filter type."/>
       <error name="EntityIdInvalid" errorcode="CampaignServiceEntityIdInvalid " code="517" message="The entity identifier is invalid."/>
+      <error name="SearchStringNotSufficient" errorcode="SearchStringNotSufficient" code="518" message="Search string is not sufficient."/>
     </category>
 
     <category name="CampaignManagement">
@@ -70,6 +71,9 @@
       <error name="MaxLimitReached" errorcode="CampaignServiceEntityMaxLimitReached" code="1045" message="The system limit for the submitted entity type has already been reached. Please see the ReasonCode element of this error object for details."/>
       <error name="EntityIdNotPassed" errorcode="CampaignServiceEntityIdNotPassed" code="1046" message="The entity ID field cannot be null or empty.. Please see the ReasonCode element of this error object for details."/>
       <error name="InvalidCpcBids" errorcode="CampaignServiceInvalidCpcBids" code="1047" message="The CPC bids associated with the entity are not valid."/>
+      <error name="CustomerNotInLanguagePilot" errorcode="CustomerNotInLanguagePilot" code="526" message="The customer is not in pilot for this language."/>
+      <error name="InvalidCustomerAccountShare" errorcode="CampaignServiceInvalidCustomerAccountShare" code="1048" message="You cannot share with the customer or account."/>
+      <error name="CustomerAccountSharePermissionDenied" errorcode="CampaignServiceCustomerAccountSharePermissionDenied" code="1049" message="You don't have permission for this operation."/>
 
       <!-- Cashback -->
       <error name="CashbackAllowedOnlyForSearchMedium" errorcode="CampaignServiceCashbackAllowedOnlyForSearchMedium" code="1019" message="Invalid Medium for Cashback."/>
@@ -385,13 +389,12 @@
       <error name="InvalidFeedAttributeTypeInCountdown" errorcode="CampaignServiceInvalidFeedAttributeTypeInCountdown" code="5051" message="The feed attribute in the COUNTDOWN or GLOBAL_COUNTDOWN function should be of DateTime type only."/>
 
       <!--Expanded Text Ad V2: support 3rd title and 2nd description -->
-      <error name="ExpandedTextAdTitlePart3TooLong" errorcode="CampaignServiceExpandedTextAdTitlePart3TooLong" code="5051" message="Ad title part 3 is over the character limit."/>
-      <error name="ExpandedTextAdTitlePart3Invalid" errorcode="CampaignServiceExpandedTextAdTitlePart3Invalid" code="5052" message="Ad title part 3 is not valid."/>
-      <error name="ExpandedTextAdTextPart1TooLong" errorcode="CampaignServiceExpandedTextAdTextPart1TooLong" code="5053" message="Ad text part 1 is over the character limit."/>
-      <error name="ExpandedTextAdTextPart1Invalid" errorcode="CampaignServiceExpandedTextAdTextPart1Invalid" code="5054" message="Ad text part 1 is not valid."/>
-      <error name="ExpandedTextAdTextPart2TooLong" errorcode="CampaignServiceExpandedTextAdTextPart2TooLong" code="5055" message="Ad text part 2 is over the character limit."/>
-      <error name="ExpandedTextAdTextPart2Invalid" errorcode="CampaignServiceExpandedTextAdTextPart2Invalid" code="5056" message="Ad text part 2 is not valid."/>
-      <error name="InvalidFeedAttributeTypeInCountdown" errorcode="CampaignServiceInvalidFeedAttributeTypeInCountdown" code="5057" message="The feed attribute in the COUNTDOWN or GLOBAL_COUNTDOWN function should be of DateTime type."/>
+      <error name="ExpandedTextAdTitlePart3TooLong" errorcode="CampaignServiceExpandedTextAdTitlePart3TooLong" code="5052" message="Ad title part 3 is over the character limit."/>
+      <error name="ExpandedTextAdTitlePart3Invalid" errorcode="CampaignServiceExpandedTextAdTitlePart3Invalid" code="5053" message="Ad title part 3 is not valid."/>
+      <error name="ExpandedTextAdTextPart1TooLong" errorcode="CampaignServiceExpandedTextAdTextPart1TooLong" code="5054" message="Ad text part 1 is over the character limit."/>
+      <error name="ExpandedTextAdTextPart1Invalid" errorcode="CampaignServiceExpandedTextAdTextPart1Invalid" code="5055" message="Ad text part 1 is not valid."/>
+      <error name="ExpandedTextAdTextPart2TooLong" errorcode="CampaignServiceExpandedTextAdTextPart2TooLong" code="5056" message="Ad text part 2 is over the character limit."/>
+      <error name="ExpandedTextAdTextPart2Invalid" errorcode="CampaignServiceExpandedTextAdTextPart2Invalid" code="5057" message="Ad text part 2 is not valid."/>
 
       <!--Target-->
       <error name="NullTarget" errorcode="CampaignServiceNullTarget" code="1400" message="Target is null."/>
@@ -943,7 +946,7 @@
       <error name="AdExtensionSchedulingPilotNotEnabledForCustomer" errorcode="CampaignServiceAdExtensionSchedulingPilotNotEnabledForCustomer" code="3930" message="The customer is not part of the AdExtension Scheduling pilot program."/>
       <error name="AdExtensionScheduleInvalidStartTime" errorcode="CampaignServiceAdExtensionScheduleInvalidStartTime" code="3931" message="Start date cannot be earlier than today."/>
       <error name="AdExtensionScheduleInvalidEndTime" errorcode="CampaignServiceAdExtensionScheduleInvalidEndTime" code="3932" message="The End time cannot be earlier than today"/>
-      <error name="InvalidScheduleDayTimeRange" errorcode="CampaignServiceInvalidScheduleDayTimeRange" code="3933" message="End date cannot be earlier than start date"/>
+      <error name="InvalidScheduleDayTimeRange" errorcode="CampaignServiceInvalidScheduleDayTimeRange" code="3933" message="The schedule day and time is invalid. For example, the end date cannot be earlier than the start date."/>
       <error name="ScheduleDayTimeRangesDayBatchLimitExceeded" errorcode="CampaignServiceScheduleDayTimeRangesDayBatchLimitExceeded" code="3934" message="Max of 6 time intervals per day."/>
       <error name="ScheduleDayTimeRangesOverlapping" errorcode="CampaignServiceScheduleDayTimeRangesOverlapping" code="3935" message="Ad schedules should be non-overlapping"/>
       <error name="InvalidScheduleDayTimeRangeInterval" errorcode="CampaignServiceInvalidScheduleDayTimeRangeInterval" code="3936" message="interval should be greater than zero"/>
@@ -994,6 +997,8 @@
       <error name="ImageAdExtensionDescriptionTooLong" errorcode="CampaignServiceImageAdExtensionDescriptionTooLong" code="3991" message="The image ad extension's description is too long."/>
       <error name="ImageAdExtensionTooManyImages" errorcode="CampaignServiceImageAdExtensionTooManyImages" code="3992" message="The image ad extension's ImageMediaIds contain too many images."/>
       <error name="ImageAdExtensionImageMediaIdsNullOrEmpty" errorcode="CampaignServiceImageAdExtensionImageMediaIdsNullOrEmpty" code="3993" message="The image ad extension's ImageMediaIds is NULL or empty."/>
+      <error name="ImageAdExtensionImageAltTextInvalid" errorcode="CampaignServiceImageAdExtensionImageAltTextInvalid" code="3994" message="The image ad extension's ImageAltText is invalid."/>
+      <error name="ImageAdExtensionImageAltTextTooLong" errorcode="CampaignServiceImageAdExtensionImageAltTextTooLong" code="3995" message="The image ad extension's ImageAltText is too long."/>
 
       <!--Image API (range = 4000 to 4099)-->
       <error name="MediaIdInvalid" errorcode="CampaignServiceMediaIdInvalid" code="4000" message="An image or icon with the specified ID was not found in the account's media library."/>
@@ -1021,6 +1026,8 @@
       <error name="MediaFormatNotSupported" errorcode="CampaignServiceMediaFormatNotSupported" code="4022" message="The media you attempted to add is not represented by a supported data format. Please refer to documentation for the supported media formats."/>
       <error name="MediaNotFoundInAccount" errorcode="CampaignServiceMediaNotFoundInAccount" code="4023" message="The media is not in the media library for the specified account."/>
       <error name="MediaIsAssociated" errorcode="CampaignServiceMediaIsAssociated" code="4024" message="The media you attempted to delete is still associated with one or more entities."/>
+      <error name="InvalidImage" errorcode="InvalidImage" code="4025" message="Image is invalid."/>
+      <error name="DuplicateImage" errorcode="DuplicateImage" code="4026" message="Image is duplicate."/>
 
       <!-- Ad Group Criterion API (range = 4100 to 4199 -->
       <error name="AdGroupCriterionIdInvalid" errorcode="CampaignServiceAdGroupCriterionIdInvalid" code="4100" message="The ad group criterion ID is not valid." />
@@ -1261,6 +1268,9 @@
       <error name="SharedBudgetAndBiddingSchemeAreMutuallyExclusive" errorcode="SharedBudgetAndBiddingSchemeAreMutuallyExclusive" code="4725" message="Shared Budget and existed bidding scheme are mutually exclusive."/>
       <error name="BiddingSchemeNotEnabledForTheLocations" errorcode="BiddingSchemeNotEnabledForTheLocations" code="4726" message="The bidding scheme is not enabled for the markets(locations)."/>
       <error name="LocationNotEnabledForTheBiddingScheme" errorcode="LocationNotEnabledForTheBiddingScheme" code="4727" message="The location is not enabled for the bidding scheme."/>
+	  <error name="NotEnoughConversionsForTargetRoasBiddingScheme" errorcode="NotEnoughConversionsForTargetRoasBiddingScheme" code="4728" message="There must be at least 15 conversions in the last 30 days to use this bid strategy."/>
+	  <error name="NotEnoughRevenueForTargetRoasBiddingScheme" errorcode="NotEnoughRevenueForTargetRoasBiddingScheme" code="4729" message="There must be revenue tracking set up and revenue greater than zero in the last 30 days to use this bid strategy."/>
+	  <error name="InvalidTargetRoasValue " errorcode="InvalidTargetRoasValue " code="4730" message="Target ROAS(Revenue on Ad Spend) needs to be a positive integer."/>	  
 
       <!--RemarketingList (range = 4800 to 4899 ) Those are APIV10 error code. For Bulk Schema 4.0 needs those error code, so include them in API V13.-->
       <error name="InvalidRemarketingListRuleItem" errorcode="InvalidRemarketingListRuleItem" code="4814" message="The remarketing list rule item is invalid."/>
@@ -1308,6 +1318,8 @@
       <error name="CustomerNotEligibleForSimilarRemarketingList" errorcode="CustomerNotEligibleForSimilarRemarketingList" code="4870" message="Customer is not eligible for similar remarketing list."/>
       <error name="AudienceCannotBeDeletedDueToPairedSimilarAudienceHasAssociations" errorcode="AudienceCannotBeDeletedDueToPairedSimilarAudienceHasAssociations" code="4871" message="Audience can not be deleted due to its paired similar audience has associations."/>
       <error name="IllegalAudienceAssociationConversionFromExclusion" errorcode="IllegalAudienceAssociationConversionFromExclusion" code="4872" message="Audience exclusions can't be changed to enabled or paused."/>
+      <error name="CustomerShareEntityScopeDoesNotMatch" errorcode="CustomerShareEntityScopeDoesNotMatch" code="4873" message="Customer share is not supported for this entity scope."/>
+      <error name="MaxCriterionLimitExceededForCustomer" errorcode="MaxCriterionLimitExceededForCustomer" code="4874" message="Max criterions per customer limit is reached."/>
 
       <!--Budget (range = 4900 to 4999 )-->
       <error name="BudgetPilotNotEnabledForCustomer" errorcode="CampaignServiceBudgetPilotNotEnabledForCustomer" code="4900" message="Customer not in Shared Budget pilot."/>
@@ -1344,6 +1356,8 @@
       <error name="DynamicSearchAdPath2Invalid" errorcode="DynamicSearchAdPath2Invalid" code="5109" message="Path 2 is not valid."/>
       <error name="DynamicSearchAdPath2SetWithoutPath1" errorcode="DynamicSearchAdPath2SetWithoutPath1" code="5110" message="The path2 is set without setting path1."/>
       <error name="DynamicSearchAdTextPart2PilotNotEnabledForCustomer" errorcode="DynamicSearchAdTextPart2PilotNotEnabledForCustomer" code="5111" message="The customer is not in pilot for the Dynamic Search Ads Text Part 2 feature."/>
+      <error name="DynamicSearchAdTextPart2TooLong" errorcode="DynamicSearchAdTextPart2TooLong" code="5112" message="Ad text part 2 is over the character limit."/>
+      <error name="DynamicSearchAdTextPart2Invalid" errorcode="DynamicSearchAdTextPart2Invalid" code="5113" message="Ad text part 2 is not valid."/>
 
       <!--Webpage Criterion (range = 5200 to 5299)-->
       <error name="CampaignTypeIsNotDynamicSearchAdsCampaign" errorcode="CampaignTypeIsNotDynamicSearchAdsCampaign" code="5200" message="Corresponding CampaignType is not Dynamic Search Ads campaign"/>
@@ -1420,6 +1434,7 @@
       <error name="OnlyOneInStoreTransactionGoalAllowedPerCustomer" errorcode="OnlyOneInStoreTransactionGoalAllowedPerCustomer" code="5358" message="Only one In-Store Transaction Goal can be created per customer."/>
       <error name="InStoreTransactionPilotNotEnabledForCustomer" errorcode="InStoreTransactionPilotNotEnabledForCustomer" code="5359" message="In-Store Transaction pilot not enabled for current customer."/>
       <error name="CustomerScopeNotSupportedForConversionGoalType" errorcode="CustomerScopeNotSupportedForConversionGoalType" code="5360" message="The customer scope is not supported for this conversion goal type."/>
+      <error name="CannotUpdateCriterionStatusDueToTagNotAvailable" errorcode="CannotUpdateCriterionStatusDueToTagNotAvailable" code="5361" message="Cannot update criterion status due to the UET Tag of the associated audience is not available."/>
 
       <!--Campaign Languages-->
       <error name="CampaignLanguagesNotEnabledForCustomer" errorcode="CampaignLanguagesNotEnabledForCustomer" code="5350" message="The customer is not enabled for campaign languages."/>
@@ -1583,8 +1598,14 @@
       <error name="KeyPropertyCannotBeUpdated" errorcode="KeyPropertyCannotBeUpdated" code="5966" message="The key property of a feed item cannot be updated"/>
       <error name="CannotUpdateFeedAttributeKey" errorcode="CannotUpdateFeedAttributeKey" code="5967" message="Feed Attribute Key cannot be updated"/>
       <error name="CustomIdAttributeShouldBeOfStringType" errorcode="CustomIdAttributeShouldBeOfStringType" code="5968" message="The Custom Id property should be of string type only."/>
-      <error name="AttributeValueStringTooLong" errorcode="AttributeValueStringTooLong" code="5969" message="The string value is too long, please shorten to contain 80 characters or less."/>
-
+      <error name="AttributeValueStringTooLong" errorcode="AttributeValueStringTooLong" code="5969" message="The string value is too long, please shorten to contain 90 characters or less."/>
+      <error name="CustomerNotEligibleForDynamicDataFeed" errorcode="CustomerNotEligibleForDynamicDataFeed" code="5970" message="Customer is not eligible for Dynamic Data Feed"/>
+      <error name="InvalidPageFeedAdTitle" errorcode="InvalidPageFeedAdTitle" code="5971" message="Invalid PageFeed Ad Title."/>
+      <error name="PageFeedAdTitleTooLong" errorcode="PageFeedAdTitleTooLong" code="5972" message="PageFeed Ad Title too long."/>
+      <error name="InvalidFeedIdsForAssociation" errorcode="InvalidFeedIdsForAssociation" code="5973" message="Invalid Feed Ids for Association"/>
+      <error name="FeedItemCountExceedFeedTypeLevelLimitation" errorcode="FeedItemCountExceedFeedTypeLevelLimitation" code="5974" message="The limit on the maximum number of feed items of current feed type has been reached."/>
+	  <error name="AttributeValueLengthExceeded" errorcode="AttributeValueLengthExceeded" code="5975" message="The feed item contains one or more attribute values exceed maximum length limit."/>
+      <error name="CustomAttributeValuesEmpty" errorcode="CustomAttributeValuesEmpty" code="5976" message="Provide a value for at least one of the custom attributes"/>
 
       <!-- Experiment (range = 6101 to 6199) -->
       <error name="ExperimentsListIsNullOrEmpty" errorcode="ExperimentsListIsNullOrEmpty" code="6101" message="The experiment list cannot be null or empty."/>
@@ -1623,6 +1644,7 @@
       <error name="ExperimentBaseCampaignCannotBeChangedToSharedBudget" errorcode="ExperimentBaseCampaignCannotBeChangedToSharedBudget" code="6134" message="A shared budget is not allowed for an experiment's base campaign."/>
       <error name="ExperimentBatchLimitExceeded" errorcode="ExperimentBatchLimitExceeded" code="6135" message="The maximum number of experiments per request is exceeded."/>
       <error name="ExperimentTypeInvalid" errorcode="ExperimentTypeInvalid" code="6136" message="The experiment type is invalid."/>
+      <error name="ExperimentTypeCannotBeChanged" errorcode="ExperimentTypeCannotBeChanged" code="6137" message="The experiment type cannot be changed."/>
 
       <!-- Responsive Search Ad (range = 6200 to 6299) -->
       <error name="ResponsiveSearchAdHeadlinesNullOrEmpty" errorcode="CampaignServiceResponsiveSearchAdHeadlinesNullOrEmpty" code="6200" message="The headlines cannot be null or empty."/>
@@ -1655,17 +1677,44 @@
       <error name="AdCustomizerNotSupportedForAdType" errorcode="CampaignServiceAdCustomizerNotSupportedForAdType" code="6225" message="Ad customizer is not supported for this ad type."/>
       <error name="MaxActiveResponsiveSearchAdsPerAdgroupLimitReached" errorcode="CampaignServiceMaxActiveResponsiveSearchAdsPerAdGroupLimitReached" code="6226" message="The number of active Responsive Search Ads per ad group would be exceeded."/>
 
-      <!-- IF Function (range = 6400 to 6499) -->
+	    <!-- IF Function (range = 6400 to 6499) -->
       <error name="IFFunctionCustomerNotInPilot" errorcode="IFFunctionCustomerNotInPilot" code="6400" message="The customer is not in pilot for IF functions"/>
-      <error name="IFFunctionIncorrectSyntaxForDevice" errorcode="IFFunctionIncorrectSyntaxForDevice" code="6401" message="Device type IF function has incorrect syntax"/>
-      <error name="IFFunctionIncorrectSyntaxForAudience" errorcode="IFFunctionIncorrectSyntaxForAudience" code="6402" message="Audience type IF function has incorrect syntax"/>
-      <error name="IFFunctionSomeHaveDefaultValueButNotAll" errorcode="IFFunctionSomeHaveDefaultValueButNotAll" code="6403" message="Either all IF functions should have a default or none"/>
-      <error name="IFFunctionInvalidAudience" errorcode="IFFunctionInvalidAudience" code="6404" message="The audience which is references in the Ad is invalid"/>
-      <error name="IFFunctionDuplicateAudiences" errorcode="IFFunctionDuplicateAudiences" code="6405" message="Duplicate audience names have been provided in the IF function"/>
-      <error name="IFFunctionSpecialCharactersAreNotEscaped" errorcode="IFFunctionSpecialCharactersAreNotEscaped" code="6406" message="User needs to escape certain special charaters per guidelines"/>
+	    <error name="IFFunctionIncorrectSyntaxForDevice" errorcode="IFFunctionIncorrectSyntaxForDevice" code="6401" message="Device type IF function has incorrect syntax"/>
+	    <error name="IFFunctionIncorrectSyntaxForAudience" errorcode="IFFunctionIncorrectSyntaxForAudience" code="6402" message="Audience type IF function has incorrect syntax"/>
+	    <error name="IFFunctionSomeHaveDefaultValueButNotAll" errorcode="IFFunctionSomeHaveDefaultValueButNotAll" code="6403" message="Either all IF functions should have a default or none"/>
+	    <error name="IFFunctionInvalidAudience" errorcode="IFFunctionInvalidAudience" code="6404" message="The audience which is references in the Ad is invalid"/>
+	    <error name="IFFunctionDuplicateAudiences" errorcode="IFFunctionDuplicateAudiences" code="6405" message="Duplicate audience names have been provided in the IF function"/>
+	    <error name="IFFunctionSpecialCharactersAreNotEscaped" errorcode="IFFunctionSpecialCharactersAreNotEscaped" code="6406" message="User needs to escape certain special charaters per guidelines"/>
       <error name="IFFunctionNestingNotAllowed" errorcode="IFFunctionNestingNotAllowed" code="6407" message="Nesting functions of any kind, within an IF function is not allowed"/>
       <error name="IFFunctionSpecialCharactersNotAllowed" errorcode="IFFunctionNestingNotAllowed" code="6408" message="Cannot include audience name containing { } in IF functions. Please rename audience without { or } before referencing in IF functions"/>
+	    <error name="IFFunctionInvalidSyntax" errorcode="IFFunctionInvalidSyntax" code="6409" message="Invalid syntax for IF function"/>
+	    <error name="IFFunctionNumAudiencesExceedsMaxForAd" errorcode="IFFunctionNumAudiencesExceedsMaxForAd" code="6410" message="Number of audiences exceeds the allowed max of 100 per ad"/>
+	    <error name="IFFunctionAudiencesExceedsMaxFieldLength" errorcode="IFFunctionAudiencesExceedsMaxFieldLength" code="6411" message="Audience names for ad exceed internal field length"/>
+      <error name="IFFunctionErrorGettingAudiences" errorcode="IFFunctionErrorGettingAudiences" code="6412" message="There was an error fetching audience list from MDS"/>
 
+      <!-- Disclaimer Ads (range = 6500 - 6599) -->
+      <error name="BulkUploadNotSupportedForDisclaimerAds" errorcode="BulkUploadNotSupportedForDisclaimerAds" code="6500" message="Bulk upload not supported for disclaimer ads"/>
+      <error name="DisclaimerSettingCannotBeUpdated" errorcode="DisclaimerSettingCannotBeUpdated" code="6501" message="Disclaimer setting cannot be updated"/>
+      <error name="CustomerNotEligibleForDisclaimerAds" errorcode="CustomerNotEligibleForDisclaimerAds" code="6502" message="Customer not eligible for disclaimer ads"/>
+      <error name="DisclaimerLayoutMissing" errorcode="DisclaimerLayoutMissing" code="6503" message="Disclaimer Layout is missing"/>
+      <error name="InvalidDisclaimerLayout" errorcode="InvalidDisclaimerLayout" code="6504" message="Invalid Disclaimer Layout"/>
+      <error name="NullOrEmptyDisclaimerPopupText" errorcode="NullOrEmptyDisclaimerPopupText" code="6505" message="Disclaimer popup text is null or empty"/>
+      <error name="DisclaimerLineTextShouldbeEmpty" errorcode="DisclaimerLineTextShouldbeEmpty" code="6506" message="Disclaimer line text should be empty"/>
+      <error name="NullOrEmptyDisclaimerLineText" errorcode="NullOrEmptyDisclaimerLineText" code="6507" message="Disclaimer line text is null or empty"/>
+      <error name="DisclaimerPopupTextShouldbeEmpty" errorcode="DisclaimerPopupTextShouldbeEmpty" code="6508" message="Disclaimer popup text should be empty"/>
+      <error name="DisclaimerFinalUrlMissing" errorcode="DisclaimerFinalUrlMissing" code="6509" message="Disclaimer final url is missing"/>
+      <error name="OnlyOneDisclaimerFinalUrlIsAllowed" errorcode="OnlyOneDisclaimerFinalUrlIsAllowed" code="6510" message="Only one disclaimer final url is allowed"/>
+      <error name="OnlyOneDisclaimerFinalMobileUrlIsAllowed" errorcode="OnlyOneDisclaimerFinalMobileUrlIsAllowed" code="6511" message="Only one disclaimer final mobile url is allowed"/>
+      <error name="DisclaimerTitleNotAllowedForLineText" errorcode="DisclaimerTitleNotAllowedForLineText" code="6512" message="Disclaimer title is not allowed for line text disclaimer"/>
+      <error name="EntityOnlyAllowedForDisclaimerCampaign" errorcode="EntityOnlyAllowedForDisclaimerCampaign" code="6513" message="Disclaimer canonly be associated to disclaimer campaign"/>
+      <error name="AppInstallAdNotSupportedForDisclaimerCampaign" errorcode="AppInstallAdNotSupportedForDisclaimerCampaign" code="6514" message="App install ad is not supported to be created under disclaimer campaign"/>
+      <error name="ExperimentNotSupportedForDisclaimerCampaign" errorcode="ExperimentNotSupportedForDisclaimerCampaign" code="6515" message="Experiment not supported for disclaimer campaign"/>
+
+      <!-- ImageAdExtensionV2 (range = 6600 - 6649) -->
+      <error name="ImageAdExtensionV2PilotNotEnabledForCustomer" errorcode="ImageAdExtensionV2PilotNotEnabledForCustomer" code="6600" message="The customer is not part of the Image AdExtension V2 pilot program."/>
+      <error name="ImageAdExtensionDisplayTextNullOrEmpty" errorcode="CampaignServiceImageAdExtensionDisplayTextNullOrEmpty" code="6601" message="The image ad extension's DisplayText cannot be null or empty."/>
+      <error name="ImageAdExtensionDisplayTextInvalid" errorcode="CampaignServiceImageAdExtensionDisplayTextInvalid" code="6602" message="The image ad extension's DisplayText is invalid."/>
+      <error name="ImageAdExtensionDisplayTextTooLong" errorcode="CampaignServiceImageAdExtensionDisplayTextTooLong" code="6603" message="The image ad extension's DisplayText is too long."/>
     </category>
 
     <category name="Reporting">
@@ -2123,5 +2172,3 @@
     </category>
   </ErrorCodesByAPI>
 </ApiErrorCodes>
-
-

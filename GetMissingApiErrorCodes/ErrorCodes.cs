@@ -9,7 +9,7 @@
 //
 // </auto-generated>
 //------------------------------------------------------------------------------
-namespace Microsoft.AdCenter.Shared.Api
+namespace Microsoft.AdCenter.Shared.Api.V13
 {
 
     using System;
@@ -147,6 +147,11 @@ namespace Microsoft.AdCenter.Shared.Api
         /// The entity identifier is invalid.
         /// </summary>
         public const int EntityIdInvalid = 517;
+
+        /// <summary>
+        /// Search string is not sufficient.
+        /// </summary>
+        public const int SearchStringNotSufficient = 518;
 
         #endregion Common
         #region CampaignManagement
@@ -306,6 +311,21 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int InvalidCpcBids = 1047;
 
         /// <summary>
+        /// The customer is not in pilot for this language.
+        /// </summary>
+        public const int CustomerNotInLanguagePilot = 526;
+
+        /// <summary>
+        /// You cannot share with the customer or account.
+        /// </summary>
+        public const int InvalidCustomerAccountShare = 1048;
+
+        /// <summary>
+        /// You don't have permission for this operation.
+        /// </summary>
+        public const int CustomerAccountSharePermissionDenied = 1049;
+
+        /// <summary>
         /// Invalid Medium for Cashback.
         /// </summary>
         public const int CashbackAllowedOnlyForSearchMedium = 1019;
@@ -389,11 +409,6 @@ namespace Microsoft.AdCenter.Shared.Api
         /// Campaign is null.
         /// </summary>
         public const int NullCampaign = 1103;
-
-        /// <summary>
-        /// The campaign description is invalid.
-        /// </summary>
-        public const int InvalidCampaignDescription = 1104;
 
         /// <summary>
         /// The campaign monthly budget is invalid.
@@ -1006,7 +1021,7 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int InvalidAdTitle = 1301;
 
         /// <summary>
-        /// The Ad's DestinationUrl field is invalid.
+        /// Invalid URL has been specified.
         /// </summary>
         public const int InvalidAdDestinationUrl = 1302;
 
@@ -1771,39 +1786,39 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int InvalidFeedAttributeForAdType = 5050;
 
         /// <summary>
+        /// The feed attribute in the COUNTDOWN or GLOBAL_COUNTDOWN function should be of DateTime type only.
+        /// </summary>
+        public const int InvalidFeedAttributeTypeInCountdown = 5051;
+
+        /// <summary>
         /// Ad title part 3 is over the character limit.
         /// </summary>
-        public const int ExpandedTextAdTitlePart3TooLong = 5051;
+        public const int ExpandedTextAdTitlePart3TooLong = 5052;
 
         /// <summary>
         /// Ad title part 3 is not valid.
         /// </summary>
-        public const int ExpandedTextAdTitlePart3Invalid = 5052;
+        public const int ExpandedTextAdTitlePart3Invalid = 5053;
 
         /// <summary>
         /// Ad text part 1 is over the character limit.
         /// </summary>
-        public const int ExpandedTextAdTextPart1TooLong = 5053;
+        public const int ExpandedTextAdTextPart1TooLong = 5054;
 
         /// <summary>
         /// Ad text part 1 is not valid.
         /// </summary>
-        public const int ExpandedTextAdTextPart1Invalid = 5054;
+        public const int ExpandedTextAdTextPart1Invalid = 5055;
 
         /// <summary>
         /// Ad text part 2 is over the character limit.
         /// </summary>
-        public const int ExpandedTextAdTextPart2TooLong = 5055;
+        public const int ExpandedTextAdTextPart2TooLong = 5056;
 
         /// <summary>
         /// Ad text part 2 is not valid.
         /// </summary>
-        public const int ExpandedTextAdTextPart2Invalid = 5056;
-
-        /// <summary>
-        /// The feed attribute in the COUNTDOWN or GLOBAL_COUNTDOWN function should be of DateTime type.
-        /// </summary>
-        public const int InvalidFeedAttributeTypeInCountdown = 5057;
+        public const int ExpandedTextAdTextPart2Invalid = 5057;
 
         /// <summary>
         /// Target is null.
@@ -3351,19 +3366,9 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int BulkDownloadUnsupportedEntities = 3211;
 
         /// <summary>
-        /// The PerformanceStatsDateRange element should be specified when including performance statistics in the data scope, and otherwise should be excluded from the request.
-        /// </summary>
-        public const int InvalidPerformanceStatsDateRangeForDataScope = 3212;
-
-        /// <summary>
         /// The LastSyncTimeInUTC element should be null when including performance statistics, bid suggestions, or quality score in the requested data scope.
         /// </summary>
         public const int InvalidSyncTimeForDataScopeSelected = 3213;
-
-        /// <summary>
-        /// The PerformanceStatsDateRange element should be set to a valid custom date or predefined time.
-        /// </summary>
-        public const int InvalidPerformanceStatsDateRange = 3214;
 
         /// <summary>
         /// The start and end date for performance statistics should be valid and within the supported range.
@@ -4356,7 +4361,7 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int AdExtensionScheduleInvalidEndTime = 3932;
 
         /// <summary>
-        /// End date cannot be earlier than start date
+        /// The schedule day and time is invalid. For example, the end date cannot be earlier than the start date.
         /// </summary>
         public const int InvalidScheduleDayTimeRange = 3933;
 
@@ -4576,6 +4581,16 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int ImageAdExtensionImageMediaIdsNullOrEmpty = 3993;
 
         /// <summary>
+        /// The image ad extension's ImageAltText is invalid.
+        /// </summary>
+        public const int ImageAdExtensionImageAltTextInvalid = 3994;
+
+        /// <summary>
+        /// The image ad extension's ImageAltText is too long.
+        /// </summary>
+        public const int ImageAdExtensionImageAltTextTooLong = 3995;
+
+        /// <summary>
         /// An image or icon with the specified ID was not found in the account's media library.
         /// </summary>
         public const int MediaIdInvalid = 4000;
@@ -4699,6 +4714,16 @@ namespace Microsoft.AdCenter.Shared.Api
         /// The media you attempted to delete is still associated with one or more entities.
         /// </summary>
         public const int MediaIsAssociated = 4024;
+
+        /// <summary>
+        /// Image is invalid.
+        /// </summary>
+        public const int InvalidImage = 4025;
+
+        /// <summary>
+        /// Image is duplicate.
+        /// </summary>
+        public const int DuplicateImage = 4026;
 
         /// <summary>
         /// The ad group criterion ID is not valid.
@@ -5816,6 +5841,21 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int LocationNotEnabledForTheBiddingScheme = 4727;
 
         /// <summary>
+        /// There must be at least 15 conversions in the last 30 days to use this bid strategy.
+        /// </summary>
+        public const int NotEnoughConversionsForTargetRoasBiddingScheme = 4728;
+
+        /// <summary>
+        /// There must be revenue tracking set up and revenue greater than zero in the last 30 days to use this bid strategy.
+        /// </summary>
+        public const int NotEnoughRevenueForTargetRoasBiddingScheme = 4729;
+
+        /// <summary>
+        /// Target ROAS(Revenue on Ad Spend) needs to be a positive integer.
+        /// </summary>
+        public const int InvalidTargetRoasValue = 4730;
+
+        /// <summary>
         /// The remarketing list rule item is invalid.
         /// </summary>
         public const int InvalidRemarketingListRuleItem = 4814;
@@ -6031,6 +6071,16 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int IllegalAudienceAssociationConversionFromExclusion = 4872;
 
         /// <summary>
+        /// Customer share is not supported for this entity scope.
+        /// </summary>
+        public const int CustomerShareEntityScopeDoesNotMatch = 4873;
+
+        /// <summary>
+        /// Max criterions per customer limit is reached.
+        /// </summary>
+        public const int MaxCriterionLimitExceededForCustomer = 4874;
+
+        /// <summary>
         /// Customer not in Shared Budget pilot.
         /// </summary>
         public const int BudgetPilotNotEnabledForCustomer = 4900;
@@ -6184,6 +6234,21 @@ namespace Microsoft.AdCenter.Shared.Api
         /// The path2 is set without setting path1.
         /// </summary>
         public const int DynamicSearchAdPath2SetWithoutPath1 = 5110;
+
+        /// <summary>
+        /// The customer is not in pilot for the Dynamic Search Ads Text Part 2 feature.
+        /// </summary>
+        public const int DynamicSearchAdTextPart2PilotNotEnabledForCustomer = 5111;
+
+        /// <summary>
+        /// Ad text part 2 is over the character limit.
+        /// </summary>
+        public const int DynamicSearchAdTextPart2TooLong = 5112;
+
+        /// <summary>
+        /// Ad text part 2 is not valid.
+        /// </summary>
+        public const int DynamicSearchAdTextPart2Invalid = 5113;
 
         /// <summary>
         /// Corresponding CampaignType is not Dynamic Search Ads campaign
@@ -6544,6 +6609,11 @@ namespace Microsoft.AdCenter.Shared.Api
         /// The customer scope is not supported for this conversion goal type.
         /// </summary>
         public const int CustomerScopeNotSupportedForConversionGoalType = 5360;
+
+        /// <summary>
+        /// Cannot update criterion status due to the UET Tag of the associated audience is not available.
+        /// </summary>
+        public const int CannotUpdateCriterionStatusDueToTagNotAvailable = 5361;
 
         /// <summary>
         /// The customer is not enabled for campaign languages.
@@ -7291,9 +7361,44 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int CustomIdAttributeShouldBeOfStringType = 5968;
 
         /// <summary>
-        /// The string value is too long, please shorten to contain 80 characters or less.
+        /// The string value is too long, please shorten to contain 90 characters or less.
         /// </summary>
         public const int AttributeValueStringTooLong = 5969;
+
+        /// <summary>
+        /// Customer is not eligible for Dynamic Data Feed
+        /// </summary>
+        public const int CustomerNotEligibleForDynamicDataFeed = 5970;
+
+        /// <summary>
+        /// Invalid PageFeed Ad Title.
+        /// </summary>
+        public const int InvalidPageFeedAdTitle = 5971;
+
+        /// <summary>
+        /// PageFeed Ad Title too long.
+        /// </summary>
+        public const int PageFeedAdTitleTooLong = 5972;
+
+        /// <summary>
+        /// Invalid Feed Ids for Association
+        /// </summary>
+        public const int InvalidFeedIdsForAssociation = 5973;
+
+        /// <summary>
+        /// The limit on the maximum number of feed items of current feed type has been reached.
+        /// </summary>
+        public const int FeedItemCountExceedFeedTypeLevelLimitation = 5974;
+
+        /// <summary>
+        /// The feed item contains one or more attribute values exceed maximum length limit.
+        /// </summary>
+        public const int AttributeValueLengthExceeded = 5975;
+
+        /// <summary>
+        /// Provide a value for at least one of the custom attributes
+        /// </summary>
+        public const int CustomAttributeValuesEmpty = 5976;
 
         /// <summary>
         /// The experiment list cannot be null or empty.
@@ -7476,6 +7581,11 @@ namespace Microsoft.AdCenter.Shared.Api
         public const int ExperimentTypeInvalid = 6136;
 
         /// <summary>
+        /// The experiment type cannot be changed.
+        /// </summary>
+        public const int ExperimentTypeCannotBeChanged = 6137;
+
+        /// <summary>
         /// The headlines cannot be null or empty.
         /// </summary>
         public const int ResponsiveSearchAdHeadlinesNullOrEmpty = 6200;
@@ -7654,6 +7764,126 @@ namespace Microsoft.AdCenter.Shared.Api
         /// Cannot include audience name containing { } in IF functions. Please rename audience without { or } before referencing in IF functions
         /// </summary>
         public const int IFFunctionSpecialCharactersNotAllowed = 6408;
+
+        /// <summary>
+        /// Invalid syntax for IF function
+        /// </summary>
+        public const int IFFunctionInvalidSyntax = 6409;
+
+        /// <summary>
+        /// Number of audiences exceeds the allowed max of 100 per ad
+        /// </summary>
+        public const int IFFunctionNumAudiencesExceedsMaxForAd = 6410;
+
+        /// <summary>
+        /// Audience names for ad exceed internal field length
+        /// </summary>
+        public const int IFFunctionAudiencesExceedsMaxFieldLength = 6411;
+
+        /// <summary>
+        /// There was an error fetching audience list from MDS
+        /// </summary>
+        public const int IFFunctionErrorGettingAudiences = 6412;
+
+        /// <summary>
+        /// Bulk upload not supported for disclaimer ads
+        /// </summary>
+        public const int BulkUploadNotSupportedForDisclaimerAds = 6500;
+
+        /// <summary>
+        /// Disclaimer setting cannot be updated
+        /// </summary>
+        public const int DisclaimerSettingCannotBeUpdated = 6501;
+
+        /// <summary>
+        /// Customer not eligible for disclaimer ads
+        /// </summary>
+        public const int CustomerNotEligibleForDisclaimerAds = 6502;
+
+        /// <summary>
+        /// Disclaimer Layout is missing
+        /// </summary>
+        public const int DisclaimerLayoutMissing = 6503;
+
+        /// <summary>
+        /// Invalid Disclaimer Layout
+        /// </summary>
+        public const int InvalidDisclaimerLayout = 6504;
+
+        /// <summary>
+        /// Disclaimer popup text is null or empty
+        /// </summary>
+        public const int NullOrEmptyDisclaimerPopupText = 6505;
+
+        /// <summary>
+        /// Disclaimer line text should be empty
+        /// </summary>
+        public const int DisclaimerLineTextShouldbeEmpty = 6506;
+
+        /// <summary>
+        /// Disclaimer line text is null or empty
+        /// </summary>
+        public const int NullOrEmptyDisclaimerLineText = 6507;
+
+        /// <summary>
+        /// Disclaimer popup text should be empty
+        /// </summary>
+        public const int DisclaimerPopupTextShouldbeEmpty = 6508;
+
+        /// <summary>
+        /// Disclaimer final url is missing
+        /// </summary>
+        public const int DisclaimerFinalUrlMissing = 6509;
+
+        /// <summary>
+        /// Only one disclaimer final url is allowed
+        /// </summary>
+        public const int OnlyOneDisclaimerFinalUrlIsAllowed = 6510;
+
+        /// <summary>
+        /// Only one disclaimer final mobile url is allowed
+        /// </summary>
+        public const int OnlyOneDisclaimerFinalMobileUrlIsAllowed = 6511;
+
+        /// <summary>
+        /// Disclaimer title is not allowed for line text disclaimer
+        /// </summary>
+        public const int DisclaimerTitleNotAllowedForLineText = 6512;
+
+        /// <summary>
+        /// Disclaimer canonly be associated to disclaimer campaign
+        /// </summary>
+        public const int EntityOnlyAllowedForDisclaimerCampaign = 6513;
+
+        /// <summary>
+        /// App install ad is not supported to be created under disclaimer campaign
+        /// </summary>
+        public const int AppInstallAdNotSupportedForDisclaimerCampaign = 6514;
+
+        /// <summary>
+        /// Experiment not supported for disclaimer campaign
+        /// </summary>
+        public const int ExperimentNotSupportedForDisclaimerCampaign = 6515;
+
+        /// <summary>
+        /// The customer is not part of the Image AdExtension V2 pilot program.
+        /// </summary>
+        public const int ImageAdExtensionV2PilotNotEnabledForCustomer = 6600;
+
+        /// <summary>
+        /// The image ad extension's DisplayText cannot be null or empty.
+        /// </summary>
+        public const int ImageAdExtensionDisplayTextNullOrEmpty = 6601;
+
+        /// <summary>
+        /// The image ad extension's DisplayText is invalid.
+        /// </summary>
+        public const int ImageAdExtensionDisplayTextInvalid = 6602;
+
+        /// <summary>
+        /// The image ad extension's DisplayText is too long.
+        /// </summary>
+        public const int ImageAdExtensionDisplayTextTooLong = 6603;
 
         #endregion CampaignManagement
         #region Reporting
@@ -7959,6 +8189,8 @@ namespace Microsoft.AdCenter.Shared.Api
             errorCodesByApiMapping.Add("Common" + "516", 1);
 
             errorCodesByApiMapping.Add("Common" + "517", 1);
+
+            errorCodesByApiMapping.Add("Common" + "518", 1);
 
             #endregion Veritical Name: Commmon Errors         
 

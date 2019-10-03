@@ -51,9 +51,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BAESyncStrings.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="MasterApiErrorCodeList.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

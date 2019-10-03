@@ -1,104 +1,363 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GetMissingApiErrorCodes
+﻿namespace GetMissingApiErrorCodes
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Xml.Linq;
+
+    internal class ErrorNode
+    {
+        public string Name { get; set; }
+
+        public string CodeInText { get; set; }
+
+        public int CodeInInt { get; set; }
+
+        public string Message { get; set; }
+
+        public string OriginalMessage { get; set; }
+    }
+
     class Program
     {
+        const string SyncStringDirectory = @"E:\Repos\BAE\src\ui\Resources\";
+        static string DesignFile = Path.Combine(SyncStringDirectory, "SyncStrings.Designer.cs");
+        static string ResxFile = Path.Combine(SyncStringDirectory, "SyncStrings.resx");
+
         static void Main(string[] args)
         {
-
-            var apiErrorCodes = GetApiErrorCodes();
-            var baeErrorCodes = GetBAESyncStrings();
-
-            var notinBAE = apiErrorCodes.Except(baeErrorCodes).ToList();
-
-            if (notinBAE.Count() > 0)
+            if (!File.Exists(DesignFile) || !File.Exists(ResxFile))
             {
-                Console.WriteLine("generated sync strings saved at " + ExtractMissingSyncStrings(notinBAE));
-            }
-            else
-            {
-                Console.WriteLine("no differences found between the API error codes and BAE SyncStrings");
+                Console.WriteLine("Does not update the original resource files.");
+                return;
             }
 
+            // Error Codes from MT API table.
+            var apiErrorCodes = GetApiErrorCodesFromMT();
+            if (apiErrorCodes.Count != apiErrorCodes.Distinct().Count())
+            {
+                throw new InvalidOperationException("It has duplicate error codes in MT table");
+            }
+
+            // Error messages from MT message table.
+            var errorMessagesFromMT = GetErrorMessagesFromMTTable();
+
+            var mtErrorCodes = errorMessagesFromMT.Select(item => item.CodeInInt).ToList();
+            if (errorMessagesFromMT.Count != errorMessagesFromMT.Distinct().Count())
+            {
+                throw new InvalidOperationException("It has duplicate error codes in MT error message table");
+            }
+
+            // Error Codes from MAE.
+            var errorMessagesFromMAE = GetErrorMessagesFromMAETable();
+
+            // Only return SyncError_*
+            var syncErrorMessagesFromMAE = errorMessagesFromMAE.Where(item => item.Name.StartsWith("SyncError_")).ToList();
+            var maeErrorCodes = syncErrorMessagesFromMAE.Select(item => item.CodeInInt).ToList();
+
+            if (maeErrorCodes.Count != maeErrorCodes.Distinct().Count())
+            {
+                throw new InvalidOperationException("It has duplicate Sync error codes in MAE table");
+            }
+
+            const string MAESyncStringFormat = "<data name=\"SyncError_{0}\" xml:space=\"preserve\">\n" +
+                                            "   <value>{1}</value>\n" +
+                                            "   <comment>ApI Error: UA Please review. [{1}]</comment>\n" +
+                                            "</data>";
+
+            StringBuilder output = new StringBuilder();
+
+            // Missing Error Codes.
+            var notinMAE = apiErrorCodes.Except(maeErrorCodes).ToList();
+            output.AppendLine($"Missing Error Codes: {notinMAE.Count} count \n");
+            if (notinMAE.Count() > 0)
+            {
+                // This is the order of VS's resx file.
+                notinMAE = notinMAE.OrderByDescending(item => item.ToString()).Reverse().ToList();
+                foreach (var item in notinMAE)
+                {
+                    var errorNodeMT = errorMessagesFromMT.Where(error => error.CodeInInt == item).FirstOrDefault();
+
+                    if (errorNodeMT == null)
+                    {
+                        throw new InvalidOperationException("This looks not correct in MT error string table.");
+                    }
+
+                    output.AppendLine(string.Format(MAESyncStringFormat, item, errorNodeMT.Message));
+                }
+            }
+
+            // Update Existing Error Codes.
+            var staleErrors = new List<string>();
+            var updatedNodes = new List<ErrorNode>();
+            foreach(var item in syncErrorMessagesFromMAE)
+            {
+                var errorNodeMT = errorMessagesFromMT.Where(error => error.CodeInInt == item.CodeInInt).FirstOrDefault();
+                if (errorNodeMT == null)
+                {
+                    // MT has removed this error and MAE will remove it too.
+                    staleErrors.Add(item.Name);
+                    continue;
+                }
+
+                // Same messages from MT and MAE error table.
+                if (errorNodeMT.Message.Equals(item.Message))
+                {
+                    continue;
+                }
+                // Check whether UX has scrubbed the string that MAE does not want to use.
+                else if (errorNodeMT.Message.Equals(item.OriginalMessage))
+                {
+                    continue;
+                }
+
+                updatedNodes.Add(new ErrorNode()
+                {
+                    Name = item.Name,
+                    CodeInInt = item.CodeInInt,
+                    Message = errorNodeMT.Message,
+                });
+            }
+
+            output.AppendLine($"\nUpdate Error Codes: {updatedNodes.Count} count\n");
+
+            foreach(var item in updatedNodes)
+            {
+                output.AppendLine(string.Format(MAESyncStringFormat, item.CodeInInt, item.Message));
+            }
+
+            output.AppendLine($"\nStale Error Codes: {staleErrors.Count} count");
+            foreach(var item in staleErrors)
+            {
+                output.AppendLine(item);
+            }
+
+            // Write the output.
+            string filename = "GeneratedSyncStringsNew.xml";
+            File.WriteAllText(filename, output.ToString());
+
+            Console.WriteLine($"There are totally:\n");
+            Console.WriteLine($"Missed: {notinMAE.Count}");
+            Console.WriteLine($"Updated: {updatedNodes.Count}");
+            Console.WriteLine($"Deleted: {staleErrors.Count}");
+            Console.WriteLine($"Check the result in {filename}");
+
+            // TODO: you need to manually add new items.
+            // Below code will automatically delete the stale items and update the existing ones from SyncString.resx.
+            Console.WriteLine("Going to update the existing items and delete the stale items......\n");
+            UpdateExistingMAESyncStringTable(updatedNodes, staleErrors);
+
+            Console.WriteLine("Done. Please manually add the missing items, and verify the updated and deleted items.");
             Console.ReadLine();
         }
 
 
-        private static List<int> GetApiErrorCodes()
+        private static List<int> GetApiErrorCodesFromMT()
         {
             // TODO : Step 1
             /// get latest api error code 
-            /// from https://msasg.visualstudio.com/Bing_Ads/_git/AdsAppsMT?path=%2Fprivate%2FCampaign%2FMT%2FSource%2FAPI%2FMergedAPI%2FV12%2FShared%2FTranslation%2FApiErrorCode.cs&version=GBmaster
+            /// from https://msasg.visualstudio.com/Bing_Ads/_git/AdsAppsMT?path=%2Fprivate%2FCampaign%2FMT%2FSource%2FAPI%2FMergedAPI%2FV13%2FSharedCore%2FTranslation%2FApiErrorCode.cs&version=GBmaster
             /// and paste it into ErrorCodes.cs file 
 
-            return typeof(Microsoft.AdCenter.Shared.Api.ErrorCodes).GetFields().Select(p => int.Parse(p.GetValue(null).ToString())).ToList();
+            return typeof(Microsoft.AdCenter.Shared.Api.V13.ErrorCodes).GetFields().Select(p => int.Parse(p.GetValue(null).ToString())).ToList();
         }
 
-        private static List<int> GetBAESyncStrings()
+        private static List<ErrorNode> GetErrorMessagesFromMTTable()
+        {
+            var xmlDocument = XDocument.Load("MasterApiErrorCodeList.xml");
+            var allNodes = xmlDocument.Descendants();
+
+            // Now only reads the <error /> nodes.
+            var errorNodes = allNodes.Where(x => x.Name.LocalName.Equals("error")).ToList();
+
+            var errorNodesList = new List<ErrorNode>();
+            foreach(var errorNode in errorNodes)
+            {
+                errorNodesList.Add(new ErrorNode()
+                {
+                    Name = errorNode.Attribute("name").Value,
+                    CodeInInt = Convert.ToInt32(errorNode.Attribute("code").Value),
+                    CodeInText = errorNode.Attribute("errorcode").Value,
+                    Message = errorNode.Attribute("message").Value
+                });
+            }
+
+            // Sort as as string because this is VS's resx file's sort order.
+            errorNodesList = errorNodesList.OrderByDescending(item => item.CodeInInt.ToString()).ToList();
+
+            // want ascending.
+            errorNodesList.Reverse();
+
+            return errorNodesList;
+        }
+
+        private static List<ErrorNode> GetErrorMessagesFromMAETable()
         {
             /// TODO : Step 2
             /// get latest file from 
             /// https://msasg.visualstudio.com/DefaultCollection/Bing_Ads/_git/BAE?path=%2Fsrc%2Fui%2FResources%2FSyncStrings.resx&version=GBmaster
             /// and paste it into BAESyncStrings.xml
 
-            var xmldocument = new System.Xml.XmlDocument();
-            xmldocument.Load("BAESyncStrings.xml");
-            var regex = new System.Text.RegularExpressions.Regex(@"SyncError_?(\d*)");
+            var xmlDocument = XDocument.Load(ResxFile);
+            var allNodes = xmlDocument.Descendants();
+            var errorNodes = allNodes.Where(x => x.Name.LocalName.Equals("data")).ToList();
 
-            List<int> errorcodes = new List<int>();
+            var regexErrorCode = new Regex(@"(Sync[a-z,A-Z]*|Ksp)(Error|Warning)_(\d*)");
+            var regexOriginalMessage = new Regex(@"\[(.*)\]");
 
-            foreach (System.Xml.XmlNode node in xmldocument.SelectNodes("./root/data"))
+            var errorNodesList = new List<ErrorNode>();
+
+#if DEBUG
+            var group1 = new List<string>();
+            var group2 = new List<string>();
+#endif//DEBUG
+
+            foreach (var errorNode in errorNodes)
             {
-                var name = node.Attributes["name"] == null ? string.Empty : node.Attributes["name"].Value.ToString();
-                if (name != null && name.Contains("SyncError"))
+                var errorCodeName = errorNode.Attribute("name").Value;
+                var valueNode = errorNode.Descendants().Where(x => x.Name.LocalName.Equals("value")).FirstOrDefault();
+                var errorCodeInInt = int.Parse(regexErrorCode.Match(errorCodeName).Groups[3].Value);
+
+                var commentNode = errorNode.Descendants().Where(x => x.Name.LocalName.Equals("comment")).FirstOrDefault();
+                string originalMessage = null;
+                if (commentNode != null)
                 {
-                    int value = int.Parse(regex.Match(name).Groups[1].Value);
-                    errorcodes.Add(value);
+                   var match = regexOriginalMessage.Match(commentNode.Value);
+                    if (match.Success)
+                    {
+                        originalMessage = match.Groups[1].Value;
+                    }
                 }
+#if DEBUG
+                group1.Add(regexErrorCode.Match(errorCodeName).Groups[1].Value);
+                group2.Add(regexErrorCode.Match(errorCodeName).Groups[2].Value);
+#endif//DEBUG
+                errorNodesList.Add(new ErrorNode()
+                {
+                    Name = errorCodeName,
+                    CodeInInt = errorCodeInInt,
+                    CodeInText = errorCodeInInt.ToString(),
+                    Message = valueNode.Value,
+                    OriginalMessage = originalMessage,
+                });
             }
 
-            return errorcodes;
+#if DEBUG
+            Console.WriteLine("Group 1: " + string.Join(", ", group1.Distinct().ToArray()) + "\n\n");
+            Console.WriteLine("Group 2: " + string.Join(", ", group2.Distinct().ToArray()) + "\n\n");
+#endif//DEBUG
 
+            errorNodesList = errorNodesList.OrderByDescending(item => item.Name).ToList();
+
+            // want ascending.
+            errorNodesList.Reverse();
+            return errorNodesList;
         }
 
-        private static string ExtractMissingSyncStrings(List<int> errorCodes)
+        private static void UpdateExistingMAESyncStringTable(List<ErrorNode> updatedNodes, List<string> staleErrors)
         {
-            /// TODO : Step 3
-            /// get latest api error message from 
-            /// https://msasg.visualstudio.com/Bing_Ads/_git/AdsAppsMT?path=%2Fprivate%2FCampaign%2FMT%2FSource%2FAPI%2FMergedAPI%2FV13%2FShared%2FTranslation%2FMasterApiErrorCodeList.xml&version=GBmaster
-            /// and paste it into MasterApiErrorCodeList.xml
+            UpdateSyncDesignerFile(DesignFile, updatedNodes, staleErrors);
+            UpdateSyncRESXFile(ResxFile, updatedNodes, staleErrors);
+        }
 
-            var xmlDocument = new System.Xml.XmlDocument();
-            xmlDocument.Load("MasterApiErrorCodeList.xml");
-            StringBuilder stringBuilder = new StringBuilder();
+        private static void UpdateSyncDesignerFile(string designFile, List<ErrorNode> updatedNodes, List<string>staleNodes)
+        {
+            const string StartOfSummary = "/// <summary>";
+            const string EndOfSummary = "/// </summary>";
+            var full = File.ReadAllText(designFile);
 
-            System.Xml.XmlNamespaceManager ns = new System.Xml.XmlNamespaceManager(xmlDocument.NameTable);
-            ns.AddNamespace("my", "http://adcenter.microsoft.com/advertiser/v5/XMLSchema");
-
-            foreach (var item in errorCodes)
+            // This is to update.
+            foreach(var updatedNode in updatedNodes)
             {
-                var nodelist = xmlDocument.SelectNodes("//my:ApiErrorCodes/my:ErrorCodesByCategory/my:category/my:error[@code=\'" + item + "\']", ns);
+                string searchTerm = $"public static string {updatedNode.Name}";
+                var endIndex = full.IndexOf(searchTerm);
+                if (endIndex < 0)
+                {
+                    throw new InvalidOperationException($"Something wrong in the {designFile} file: {searchTerm}");
+                }
+                var startIndex = full.LastIndexOf(StartOfSummary, endIndex, endIndex);
+                endIndex = full.LastIndexOf(EndOfSummary, endIndex, endIndex);
 
-                var node = nodelist[0];
-                var value = string.Format("<data name=\"SyncError_{0}\" xml:space=\"preserve\">\n" +
-                    "   <value>{1}</value>\n" +
-                    "   <comment> ApI Error: UA Please review </comment>\n" +
-                    "</data>", item, node.Attributes["message"].Value);
-
-                stringBuilder.AppendLine(value);
+                var oldStr = full.Substring(startIndex, endIndex - startIndex);
+                string newStr =                "/// <summary>\r\n" +
+                                     $"        ///   Looks up a localized string similar to {updatedNode.Message}.\r\n" +
+                                      "        ";
+                full = full.Replace(oldStr, newStr);
             }
 
-            string filename = "GeneratedSyncStrings.xml";
-            System.IO.File.WriteAllText(filename, stringBuilder.ToString());
+            // This is to delete
+            foreach(var stale in staleNodes)
+            {
+                string searchTerm = $"public static string {stale}";
 
-            var info = new System.IO.FileInfo(filename);
+                var endIndex = full.IndexOf(searchTerm);
+                if (endIndex < 0)
+                {
+                    throw new InvalidOperationException($"Something wrong in the {designFile} file: {searchTerm}");
+                }
 
-            return info.FullName;
+                var startIndexOfItsSummary = full.LastIndexOf(StartOfSummary, endIndex, endIndex);
+                startIndexOfItsSummary -= 8; // delete the eight spaces.
+
+                var startIndexOfNextSummary = full.IndexOf(StartOfSummary, endIndex);
+                if (startIndexOfNextSummary < 0)
+                {
+                    throw new InvalidOperationException($"Edge case is not handled {stale}. Please manually delete it first.");
+                }
+                startIndexOfNextSummary -= 8; // exclude the eight spaces.
+
+                var oldStr = full.Substring(startIndexOfItsSummary, startIndexOfNextSummary - startIndexOfItsSummary);
+                full = full.Replace(oldStr, string.Empty);
+            }
+
+            File.WriteAllText(designFile, full);
+        }
+
+        private static void UpdateSyncRESXFile(string resxFile, List<ErrorNode> updatedNodes, List<string> staleNodes)
+        {
+            var xmlDocument = XDocument.Load(resxFile);
+            var allNodes = xmlDocument.Descendants().Where(x => x.Name.LocalName.Equals("data"));
+            List<XElement> toDeleted = new List<XElement>();
+
+            foreach(var node in allNodes)
+            {
+                var nodeName = node.Attribute("name").Value;
+                var updatedNode = updatedNodes.Where(update => update.Name.Equals(nodeName)).FirstOrDefault();
+
+                // This is to update the node.
+                if (updatedNode != null)
+                {
+                    node.Descendants().Where(x => x.Name.LocalName.Equals("value")).FirstOrDefault().Value = updatedNode.Message;
+                    var commentNode = node.Descendants().Where(x => x.Name.LocalName.Equals("comment")).FirstOrDefault();
+                    if (commentNode == null)
+                    {
+                        commentNode = new XElement("comment");
+                        node.Add(commentNode);
+                    }
+
+                    commentNode.Value = $"ApI Error: UA Please review. [{updatedNode.Message}]";
+
+                    continue;
+                }
+
+                var deletedNode = staleNodes.Where(stale => stale.Equals(nodeName)).FirstOrDefault();
+                if (deletedNode != null)
+                {
+                    toDeleted.Add(node);
+
+                    continue;
+                }
+
+                // Not update, not delete nodes.
+            }
+
+            // Cannot delete in the above enumeration.
+            toDeleted.ForEach(item => item.Remove());
+
+            xmlDocument.Save(resxFile);
         }
     }
 }
